@@ -3,6 +3,7 @@ import { SignInForm } from "@/components/auth/sign-in-form";
 import { SignOutButton } from "@/components/auth/sign-out-button";
 import { DeanStaffPanel } from "@/components/admin/dean-staff-panel";
 import { OfficeQrPanel, type OfficeQrCode } from "@/components/attendance/office-qr-panel";
+import { TeacherAttendancePanel, type TeacherAttendanceRecord } from "@/components/attendance/teacher-attendance-panel";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function Home() {
@@ -54,6 +55,15 @@ export default async function Home() {
           { body: { action: "list" } },
         )
       : { data: null, error: null };
+  const { data: attendanceRecord, error: attendanceError } =
+    profile?.role === "teacher"
+      ? await supabase
+          .from("attendance_records")
+          .select("id, work_date, time_in, time_out, time_out_status")
+          .order("work_date", { ascending: false })
+          .limit(1)
+          .maybeSingle()
+      : { data: null, error: null };
 
   if (profile && !profile.is_active) {
     return (
@@ -94,7 +104,7 @@ export default async function Home() {
           ) : profile ? (
             <p className="text-sm text-muted-foreground">
               {profile.role === "teacher"
-                ? "Your account is ready. Teacher attendance scanning will be available in the next step."
+                ? "Scan the office QR for your daily time-in and time-out."
                 : profile.role === "secretary"
                   ? "Display the office QR below so teachers can scan for their daily time-in and time-out."
                   : "Manage staff accounts and open office tools from your Dean dashboard."}
@@ -109,6 +119,12 @@ export default async function Home() {
         <OfficeQrPanel
           initialCode={(currentQr as OfficeQrCode | null) ?? null}
           initialError={qrError ? "Could not load the office QR code. Confirm that migration 004 has run." : null}
+        />
+      )}
+      {profile?.role === "teacher" && (
+        <TeacherAttendancePanel
+          initialRecord={(attendanceRecord as TeacherAttendanceRecord | null) ?? null}
+          initialError={attendanceError ? "Could not load your attendance record. Please refresh the page." : null}
         />
       )}
       {profile?.role === "dean" && (

@@ -4,7 +4,7 @@
 
 **Blocked by:** 02, 03.
 
-**Status:** todo
+**Status:** ready for live verification
 
 - [ ] A valid scan creates a time-in record for the signed-in teacher and current workday.
 - [ ] The system records the scan time automatically; the teacher cannot type or edit it.

@@ -4,7 +4,7 @@
 
 **Blocked by:** 04.
 
-**Status:** todo
+**Status:** ready for live verification
 
 - [ ] A teacher’s second valid scan that workday records time out automatically.
 - [ ] If no second scan is recorded by the end of the workday, the record shows 11:59 PM and “Forgot to time out.”
