@@ -2,6 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { SignInForm } from "@/components/auth/sign-in-form";
 import { SignOutButton } from "@/components/auth/sign-out-button";
 import { DeanStaffPanel } from "@/components/admin/dean-staff-panel";
+import { OfficeQrPanel, type OfficeQrCode } from "@/components/attendance/office-qr-panel";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function Home() {
@@ -36,6 +37,16 @@ export default async function Home() {
           .in("role", ["teacher", "secretary"])
           .order("display_name")
       : { data: null };
+  const isOfficeAdmin = profile?.role === "secretary" || profile?.role === "dean";
+  const { data: currentQr, error: qrError } = isOfficeAdmin
+    ? await supabase
+        .from("office_qr_codes")
+        .select("token, created_at, expires_at")
+        .gt("expires_at", new Date().toISOString())
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle()
+    : { data: null, error: null };
   const { data: deanData, error: deanListError } =
     profile?.role === "dean"
       ? await supabase.functions.invoke<{ staff: Array<{ user_id: string; email: string; display_name: string; role: "teacher" | "secretary"; is_active: boolean }> }>(
@@ -64,7 +75,9 @@ export default async function Home() {
         <span className="inline-flex rounded-full border border-border px-3 py-1 text-xs font-medium text-muted-foreground">
           CITE Faculty Attendance
         </span>
-        <h1 className="text-3xl font-semibold tracking-tight">Staff account</h1>
+        <h1 className="text-3xl font-semibold tracking-tight">
+          {profile?.role === "secretary" ? "Secretary office" : profile?.role === "dean" ? "Dean dashboard" : "Staff account"}
+        </h1>
         <p className="text-sm text-muted-foreground">You are signed in as {user.email}.</p>
       </header>
 
@@ -79,13 +92,25 @@ export default async function Home() {
           {error ? (
             <p className="text-sm text-destructive">We couldn’t load your profile. Please refresh or contact the office.</p>
           ) : profile ? (
-            <p className="text-sm text-muted-foreground">Your staff profile is connected. Attendance check-in will be available in a later step.</p>
+            <p className="text-sm text-muted-foreground">
+              {profile.role === "teacher"
+                ? "Your account is ready. Teacher attendance scanning will be available in the next step."
+                : profile.role === "secretary"
+                  ? "Display the office QR below so teachers can scan for their daily time-in and time-out."
+                  : "Manage staff accounts and open office tools from your Dean dashboard."}
+            </p>
           ) : (
             <p className="text-sm text-muted-foreground">Ask the Dean to add your profile before using staff features.</p>
           )}
           <SignOutButton />
         </CardContent>
       </Card>
+      {isOfficeAdmin && (
+        <OfficeQrPanel
+          initialCode={(currentQr as OfficeQrCode | null) ?? null}
+          initialError={qrError ? "Could not load the office QR code. Confirm that migration 004 has run." : null}
+        />
+      )}
       {profile?.role === "dean" && (
         <DeanStaffPanel
           initialStaff={deanData?.staff ?? []}
