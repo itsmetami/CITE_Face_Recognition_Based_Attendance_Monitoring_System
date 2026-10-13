@@ -3,6 +3,7 @@ import { SignInForm } from "@/components/auth/sign-in-form";
 import { SignOutButton } from "@/components/auth/sign-out-button";
 import { DeanStaffPanel } from "@/components/admin/dean-staff-panel";
 import { OfficeQrPanel, type OfficeQrCode } from "@/components/attendance/office-qr-panel";
+import { OfficeAttendanceList } from "@/components/attendance/office-attendance-list";
 import { TeacherAttendancePanel, type TeacherAttendanceRecord } from "@/components/attendance/teacher-attendance-panel";
 import { createClient } from "@/lib/supabase/server";
 
@@ -30,14 +31,14 @@ export default async function Home() {
     .select("display_name, role, is_active")
     .eq("user_id", user.id)
     .maybeSingle();
-  const { data: staffProfiles } =
-    profile?.role === "secretary"
+  const { data: staffProfiles, error: staffProfilesError } =
+    profile?.role === "secretary" || profile?.role === "dean"
       ? await supabase
           .from("profiles")
           .select("user_id, display_name, role")
-          .in("role", ["teacher", "secretary"])
+          .eq("role", "teacher")
           .order("display_name")
-      : { data: null };
+      : { data: null, error: null };
   const isOfficeAdmin = profile?.role === "secretary" || profile?.role === "dean";
   const { data: currentQr, error: qrError } = isOfficeAdmin
     ? await supabase
@@ -80,7 +81,7 @@ export default async function Home() {
   }
 
   return (
-    <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-8 px-4 py-12 sm:py-20">
+    <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 px-4 py-12 sm:py-20">
       <header className="space-y-3">
         <span className="inline-flex rounded-full border border-border px-3 py-1 text-xs font-medium text-muted-foreground">
           CITE Faculty Attendance
@@ -154,6 +155,15 @@ export default async function Home() {
             )}
           </CardContent>
         </Card>
+      )}
+      {(profile?.role === "secretary" || profile?.role === "dean") && (
+        <OfficeAttendanceList
+          teachers={(staffProfiles ?? []).map((staff) => ({
+            user_id: staff.user_id,
+            display_name: staff.display_name,
+          }))}
+          initialError={staffProfilesError ? "Could not load teacher names. Attendance names may be unavailable." : null}
+        />
       )}
     </main>
   );
