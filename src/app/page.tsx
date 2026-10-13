@@ -1,83 +1,87 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { SignInForm } from "@/components/auth/sign-in-form";
+import { SignOutButton } from "@/components/auth/sign-out-button";
+import { createClient } from "@/lib/supabase/server";
 
-// This is the starter screen. Once Ticket 01 is done and you can see this
-// page on your phone, delete everything here and build your own app.
+export default async function Home() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
 
-const steps = [
-  {
-    n: "01",
-    title: "Get it live",
-    body: "If you are reading this on a vercel.app URL, this step is done. Put that URL at the top of your README and open it on your phone.",
-  },
-  {
-    n: "02",
-    title: "Find the real problem",
-    body: "Run /grill-with-docs in Claude Code. You will be asked about a real person you have watched struggle. Have an answer.",
-  },
-  {
-    n: "03",
-    title: "Pitch it",
-    body: "Run /pitch to turn your problem into a three-minute script for Session 1.",
-  },
-  {
-    n: "04",
-    title: "Spec, tickets, build",
-    body: "/to-spec, then /to-tickets, then /implement one ticket at a time. Push after every ticket and check the live URL.",
-  },
-  {
-    n: "05",
-    title: "Review before you demo",
-    body: "/code-review. Fix every red item. An unprotected database on a public URL is a real data leak.",
-  },
-];
+  if (!user) {
+    return (
+      <main className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center px-4 py-12">
+        <div className="mb-8 space-y-3 text-center">
+          <span className="inline-flex rounded-full border border-border px-3 py-1 text-xs font-medium text-muted-foreground">
+            CITE Faculty Attendance
+          </span>
+          <h1 className="text-3xl font-semibold tracking-tight">Welcome back</h1>
+          <p className="text-sm text-muted-foreground">Sign in with your staff account to continue.</p>
+        </div>
+        <SignInForm />
+      </main>
+    );
+  }
 
-export default function Home() {
+  const { data: profile, error } = await supabase
+    .from("profiles")
+    .select("display_name, role")
+    .eq("user_id", user.id)
+    .maybeSingle();
+  const { data: staffProfiles } =
+    profile?.role === "secretary"
+      ? await supabase.from("profiles").select("user_id, display_name, role").order("display_name")
+      : { data: null };
+
   return (
     <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-8 px-4 py-12 sm:py-20">
-      <header className="flex flex-col gap-3">
-        <span className="inline-flex w-fit items-center rounded-full border border-border px-3 py-1 text-xs font-medium text-muted-foreground">
-          PHINMA AI Builder Workshop
+      <header className="space-y-3">
+        <span className="inline-flex rounded-full border border-border px-3 py-1 text-xs font-medium text-muted-foreground">
+          CITE Faculty Attendance
         </span>
-        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-          Your app is live.
-        </h1>
-        <p className="text-base text-muted-foreground">
-          This page is deployed on the internet right now. Anyone with the link
-          can open it. That is the whole point — you will be building on
-          something real, not something on your laptop.
-        </p>
+        <h1 className="text-3xl font-semibold tracking-tight">Staff account</h1>
+        <p className="text-sm text-muted-foreground">You are signed in as {user.email}.</p>
       </header>
 
       <Card>
         <CardHeader>
-          <CardTitle>What happens next</CardTitle>
+          <CardTitle>{profile?.display_name ?? "Profile not set up"}</CardTitle>
+          <CardDescription>
+            {profile ? `Account role: ${profile.role}` : "Your account is authenticated, but the office has not added a matching staff profile yet."}
+          </CardDescription>
         </CardHeader>
-        <CardContent className="flex flex-col gap-5">
-          {steps.map((step) => (
-            <div key={step.n} className="flex gap-4">
-              <span className="font-mono text-sm text-muted-foreground tabular-nums">
-                {step.n}
-              </span>
-              <div className="flex flex-col gap-1">
-                <p className="text-sm font-medium">{step.title}</p>
-                <p className="text-sm text-muted-foreground">{step.body}</p>
-              </div>
-            </div>
-          ))}
+        <CardContent className="space-y-4">
+          {error ? (
+            <p className="text-sm text-destructive">We couldn’t load your profile. Please refresh or contact the office.</p>
+          ) : profile ? (
+            <p className="text-sm text-muted-foreground">Your staff profile is connected. Attendance check-in will be available in a later step.</p>
+          ) : (
+            <p className="text-sm text-muted-foreground">Ask the secretary to add your profile in Supabase before using attendance features.</p>
+          )}
+          <SignOutButton />
         </CardContent>
       </Card>
-
-      <div className="flex flex-wrap items-center gap-3">
-        <Button>Replace this page with your app</Button>
-        <span className="text-sm text-muted-foreground">
-          src/app/page.tsx
-        </span>
-      </div>
-
-      <footer className="mt-auto border-t border-border pt-6 text-sm text-muted-foreground">
-        One user. One job. Demoable in three minutes.
-      </footer>
+      {profile?.role === "secretary" && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Staff profiles</CardTitle>
+            <CardDescription>Profiles available to the office account under the database access policy.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {staffProfiles?.length ? (
+              <ul className="divide-y divide-border">
+                {staffProfiles.map((staff) => (
+                  <li key={staff.user_id} className="flex items-center justify-between gap-4 py-3 text-sm first:pt-0 last:pb-0">
+                    <span>{staff.display_name}</span>
+                    <span className="capitalize text-muted-foreground">{staff.role}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-sm text-muted-foreground">No staff profiles are available yet.</p>
+            )}
+          </CardContent>
+        </Card>
+      )}
     </main>
   );
 }
