@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { SignInForm } from "@/components/auth/sign-in-form";
 import { SignOutButton } from "@/components/auth/sign-out-button";
+import { DeanStaffPanel } from "@/components/admin/dean-staff-panel";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function Home() {
@@ -24,13 +25,38 @@ export default async function Home() {
 
   const { data: profile, error } = await supabase
     .from("profiles")
-    .select("display_name, role")
+    .select("display_name, role, is_active")
     .eq("user_id", user.id)
     .maybeSingle();
   const { data: staffProfiles } =
     profile?.role === "secretary"
-      ? await supabase.from("profiles").select("user_id, display_name, role").order("display_name")
+      ? await supabase
+          .from("profiles")
+          .select("user_id, display_name, role")
+          .in("role", ["teacher", "secretary"])
+          .order("display_name")
       : { data: null };
+  const { data: deanData, error: deanListError } =
+    profile?.role === "dean"
+      ? await supabase.functions.invoke<{ staff: Array<{ user_id: string; email: string; display_name: string; role: "teacher" | "secretary"; is_active: boolean }> }>(
+          "admin-users",
+          { body: { action: "list" } },
+        )
+      : { data: null, error: null };
+
+  if (profile && !profile.is_active) {
+    return (
+      <main className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center gap-5 px-4 py-12">
+        <Card>
+          <CardHeader>
+            <CardTitle>Account deactivated</CardTitle>
+            <CardDescription>Your staff account is inactive. Contact the Dean if you think this is a mistake.</CardDescription>
+          </CardHeader>
+          <CardContent><SignOutButton /></CardContent>
+        </Card>
+      </main>
+    );
+  }
 
   return (
     <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-8 px-4 py-12 sm:py-20">
@@ -55,11 +81,17 @@ export default async function Home() {
           ) : profile ? (
             <p className="text-sm text-muted-foreground">Your staff profile is connected. Attendance check-in will be available in a later step.</p>
           ) : (
-            <p className="text-sm text-muted-foreground">Ask the secretary to add your profile in Supabase before using attendance features.</p>
+            <p className="text-sm text-muted-foreground">Ask the Dean to add your profile before using staff features.</p>
           )}
           <SignOutButton />
         </CardContent>
       </Card>
+      {profile?.role === "dean" && (
+        <DeanStaffPanel
+          initialStaff={deanData?.staff ?? []}
+          initialError={deanListError ? "Could not load staff accounts. Check that the admin-users function is deployed." : null}
+        />
+      )}
       {profile?.role === "secretary" && (
         <Card>
           <CardHeader>

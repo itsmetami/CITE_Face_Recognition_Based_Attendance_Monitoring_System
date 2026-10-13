@@ -6,8 +6,9 @@
 
 **Status:** todo
 
-- [ ] The secretary can add or correct a teacher’s time in or time out.
+- [ ] The secretary can add or correct a teacher’s time in or time out; the Dean can manage all attendance records.
 - [ ] A correction cannot be saved without a note.
 - [ ] The record shows who made the correction and the note explaining it.
 - [ ] Teachers can see the corrected values on their own records but cannot make corrections themselves.
+- [ ] Dean deletions are soft deletes preserved in audit history.
 - [ ] Works on the live URL.

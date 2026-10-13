@@ -6,7 +6,7 @@
 
 **Status:** todo
 
-- [ ] The secretary can open the office QR display after signing in.
+- [ ] The secretary or Dean can open and manage the office QR display after signing in.
 - [ ] The displayed code is saved with its creation and expiration times.
 - [ ] Only the current code is accepted; expired codes cannot be used to record attendance.
 - [ ] The office agrees on how often the code refreshes before the trial.

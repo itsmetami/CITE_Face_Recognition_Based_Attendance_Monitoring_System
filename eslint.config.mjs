@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Supabase Edge Functions run in Deno, outside the Next.js runtime.
+    "supabase/functions/**",
   ]),
 ]);
 

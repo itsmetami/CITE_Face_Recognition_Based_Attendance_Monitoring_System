@@ -6,7 +6,7 @@
 
 **Status:** todo
 
-- [ ] The secretary can see attendance records for all teachers.
+- [ ] The secretary and Dean can see attendance records for all teachers.
 - [ ] Each record shows the teacher, workday, time in, time out, and any missing-time-out label.
 - [ ] Teachers remain limited to their own records.
 - [ ] Works on the live URL.
