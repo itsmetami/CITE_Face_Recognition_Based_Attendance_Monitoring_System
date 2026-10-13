@@ -1,4 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { CiteBrand } from "@/components/brand/cite-brand";
 import { SignInForm } from "@/components/auth/sign-in-form";
 import { SignOutButton } from "@/components/auth/sign-out-button";
 import { DeanStaffPanel } from "@/components/admin/dean-staff-panel";
@@ -13,15 +14,47 @@ export default async function Home() {
 
   if (!user) {
     return (
-      <main className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center px-4 py-12">
-        <div className="mb-8 space-y-3 text-center">
-          <span className="inline-flex rounded-full border border-border px-3 py-1 text-xs font-medium text-muted-foreground">
-            CITE Faculty Attendance
-          </span>
-          <h1 className="text-3xl font-semibold tracking-tight">Welcome back</h1>
-          <p className="text-sm text-muted-foreground">Sign in with your staff account to continue.</p>
-        </div>
-        <SignInForm />
+      <main className="mx-auto grid w-full max-w-6xl flex-1 items-center gap-8 px-4 py-8 sm:px-6 lg:grid-cols-[1.08fr_0.92fr] lg:gap-14 lg:px-8 lg:py-14">
+        <section className="relative isolate flex min-h-[34rem] flex-col justify-between overflow-hidden rounded-[2rem] bg-[#18231b] p-7 text-white shadow-[0_30px_80px_-36px_rgba(18,36,23,0.55)] sm:p-10">
+          <div aria-hidden="true" className="absolute -right-24 -top-28 -z-10 size-80 rounded-full bg-[#e87525]/20 blur-3xl" />
+          <div aria-hidden="true" className="absolute -bottom-36 -left-24 -z-10 size-80 rounded-full bg-[#478458]/25 blur-3xl" />
+          <div className="space-y-14">
+            <CiteBrand inverse />
+            <div className="max-w-lg space-y-5">
+              <span className="inline-flex items-center gap-2 rounded-full border border-[#e87525]/35 bg-[#e87525]/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.15em] text-[#ffb274]">
+                <span className="size-1.5 rounded-full bg-[#f28a40]" /> Staff portal
+              </span>
+              <h1 className="text-4xl font-semibold leading-[1.08] tracking-tight sm:text-5xl">
+                A clearer way to keep track of attendance.
+              </h1>
+              <p className="max-w-md text-base leading-7 text-white/65">
+                Secure staff access, quick QR check-ins, and one reliable record for the CITE office.
+              </p>
+            </div>
+          </div>
+          <div className="grid gap-3 border-t border-white/10 pt-6 sm:grid-cols-3">
+            {[
+              ["01", "Staff accounts"],
+              ["02", "Quick QR scans"],
+              ["03", "Office records"],
+            ].map(([number, label]) => (
+              <div key={number} className="flex items-center gap-3 text-sm text-white/75">
+                <span className="grid size-8 place-items-center rounded-xl bg-white/8 text-xs font-bold text-[#f49a5d]">{number}</span>
+                <span>{label}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="mx-auto w-full max-w-md space-y-6 lg:max-w-none">
+          <div className="space-y-2 px-1">
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#37754a] dark:text-[#91cf9b]">Welcome back</p>
+            <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">Sign in to continue</h2>
+            <p className="text-sm leading-6 text-muted-foreground">Use the staff email and password provided by the CITE office.</p>
+          </div>
+          <SignInForm />
+          <p className="text-center text-xs text-muted-foreground">Need access? Contact your department administrator.</p>
+        </section>
       </main>
     );
   }
@@ -68,7 +101,7 @@ export default async function Home() {
 
   if (profile && !profile.is_active) {
     return (
-      <main className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center gap-5 px-4 py-12">
+      <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col justify-center gap-5 px-4 py-12">
         <Card>
           <CardHeader>
             <CardTitle>Account deactivated</CardTitle>
@@ -81,41 +114,56 @@ export default async function Home() {
   }
 
   return (
-    <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 px-4 py-12 sm:py-20">
-      <header className="space-y-3">
-        <span className="inline-flex rounded-full border border-border px-3 py-1 text-xs font-medium text-muted-foreground">
-          CITE Faculty Attendance
-        </span>
-        <h1 className="text-3xl font-semibold tracking-tight">
-          {profile?.role === "secretary" ? "Secretary office" : profile?.role === "dean" ? "Dean dashboard" : "Staff account"}
-        </h1>
-        <p className="text-sm text-muted-foreground">You are signed in as {user.email}.</p>
+    <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 px-4 py-7 sm:px-6 sm:py-10 lg:px-8">
+      <header className="space-y-6">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <CiteBrand />
+          <div className="flex items-center gap-3">
+            <div className="hidden text-right sm:block">
+              <p className="max-w-56 truncate text-sm font-semibold">{profile?.display_name ?? user.email}</p>
+              <p className="text-xs text-muted-foreground">{user.email}</p>
+            </div>
+            <SignOutButton />
+          </div>
+        </div>
+        <section className="relative isolate overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#18231b] via-[#1d2b20] to-[#285237] px-6 py-8 text-white shadow-[0_26px_70px_-38px_rgba(18,36,23,0.55)] sm:px-9 sm:py-10">
+          <div aria-hidden="true" className="absolute -right-16 -top-28 -z-10 size-80 rounded-full bg-[#e87525]/20 blur-3xl" />
+          <div className="flex flex-wrap items-start justify-between gap-6">
+            <div className="max-w-2xl space-y-4">
+              <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/8 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-white/80">
+                <span className="size-1.5 rounded-full bg-[#ef8a43]" />
+                {profile?.role ?? "Staff account"} portal
+              </span>
+              <div className="space-y-2">
+                <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+                  {profile?.role === "secretary"
+                    ? "Secretary office"
+                    : profile?.role === "dean"
+                      ? "Dean dashboard"
+                      : profile?.role === "teacher"
+                        ? `Welcome, ${profile.display_name}`
+                        : "Your staff account"}
+                </h1>
+                <p className="max-w-xl text-sm leading-6 text-white/65 sm:text-base">
+                  {error
+                    ? "We couldn’t load your profile. Please refresh or contact the office."
+                    : profile?.role === "teacher"
+                      ? "Scan the office QR to record your daily time-in and time-out. Your attendance stays in one clear place."
+                      : profile?.role === "secretary"
+                        ? "Display the office QR, review faculty attendance, and download records for your reports."
+                        : profile?.role === "dean"
+                          ? "Manage staff access and review faculty attendance from one dashboard."
+                          : "Your account is authenticated, but the office has not added a matching staff profile yet."}
+                </p>
+              </div>
+            </div>
+            <div className="rounded-2xl border border-white/10 bg-black/10 px-4 py-3 text-sm text-white/75 backdrop-blur-sm">
+              <p className="text-xs uppercase tracking-wider text-white/45">Signed in as</p>
+              <p className="mt-1 max-w-64 truncate font-medium text-white">{user.email}</p>
+            </div>
+          </div>
+        </section>
       </header>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>{profile?.display_name ?? "Profile not set up"}</CardTitle>
-          <CardDescription>
-            {profile ? `Account role: ${profile.role}` : "Your account is authenticated, but the office has not added a matching staff profile yet."}
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {error ? (
-            <p className="text-sm text-destructive">We couldn’t load your profile. Please refresh or contact the office.</p>
-          ) : profile ? (
-            <p className="text-sm text-muted-foreground">
-              {profile.role === "teacher"
-                ? "Scan the office QR for your daily time-in and time-out."
-                : profile.role === "secretary"
-                  ? "Display the office QR below so teachers can scan for their daily time-in and time-out."
-                  : "Manage staff accounts and open office tools from your Dean dashboard."}
-            </p>
-          ) : (
-            <p className="text-sm text-muted-foreground">Ask the Dean to add your profile before using staff features.</p>
-          )}
-          <SignOutButton />
-        </CardContent>
-      </Card>
       {isOfficeAdmin && (
         <OfficeQrPanel
           initialCode={(currentQr as OfficeQrCode | null) ?? null}

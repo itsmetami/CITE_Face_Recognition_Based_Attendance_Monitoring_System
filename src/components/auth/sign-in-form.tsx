@@ -40,19 +40,19 @@ export function SignInForm() {
   }
 
   return (
-    <Card>
+    <Card className="overflow-hidden border-border shadow-[0_24px_70px_-38px_rgba(18,36,23,0.38)]">
       <CardContent className="pt-6">
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="space-y-2">
             <Label htmlFor="email">Staff email</Label>
-            <Input id="email" name="email" type="email" autoComplete="username" required />
+            <Input id="email" name="email" type="email" autoComplete="username" placeholder="name@phinmaed.com" required />
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
             <Input id="password" name="password" type="password" autoComplete="current-password" required />
           </div>
           {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
-          <Button type="submit" className="w-full" disabled={pending}>
+          <Button type="submit" size="lg" className="w-full" disabled={pending}>
             {pending ? "Signing in…" : "Sign in"}
           </Button>
           <p className="text-center text-xs text-muted-foreground">Staff accounts are created by the office. Self-registration is disabled.</p>

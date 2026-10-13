@@ -105,9 +105,12 @@ export function OfficeQrPanel({ initialCode, initialError }: OfficeQrPanelProps)
     : 0;
   return (
     <section className="space-y-5" aria-labelledby="office-qr-title">
-      <div>
-        <h2 id="office-qr-title" className="text-2xl font-semibold tracking-tight">Office attendance QR</h2>
-        <p className="mt-1 text-sm text-muted-foreground">
+      <div className="space-y-2">
+        <span className="inline-flex items-center gap-2 rounded-full bg-[#e87525]/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-[#b95b19] dark:bg-[#e87525]/15 dark:text-[#ffb274]">
+          <span className="size-1.5 rounded-full bg-[#e87525]" /> Live office tool
+        </span>
+        <h2 id="office-qr-title" className="text-2xl font-semibold tracking-tight sm:text-3xl">Office attendance QR</h2>
+        <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
           Keep this screen open in the office. The QR code renews every five minutes.
         </p>
       </div>
@@ -121,7 +124,7 @@ export function OfficeQrPanel({ initialCode, initialError }: OfficeQrPanelProps)
         </CardHeader>
         <CardContent className="flex flex-col items-center gap-5">
           {code && secondsRemaining > 0 ? (
-            <div className="rounded-xl border border-border bg-white p-4">
+            <div className="rounded-[1.5rem] border border-[#e2e9e0] bg-white p-4 shadow-[0_18px_48px_-28px_rgba(30,78,42,0.55)] ring-8 ring-[#e7f1e8]">
               <QRCodeSVG value={code.token} size={256} level="M" includeMargin />
             </div>
           ) : (
@@ -133,7 +136,7 @@ export function OfficeQrPanel({ initialCode, initialError }: OfficeQrPanelProps)
           <div className="text-center">
             {code && secondsRemaining > 0 ? (
               <>
-                <p className="text-sm font-medium" role="status">
+                <p className="inline-flex items-center rounded-full bg-[#e8f2e9] px-3 py-1 text-sm font-semibold tabular-nums text-[#28623b]" role="status">
                   Refreshes in {Math.floor(secondsRemaining / 60)}:{String(secondsRemaining % 60).padStart(2, "0")}
                 </p>
                 <p className="mt-1 text-xs text-muted-foreground">

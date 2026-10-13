@@ -154,9 +154,12 @@ export function OfficeAttendanceList({ teachers, initialError }: OfficeAttendanc
 
   return (
     <section className="space-y-5" aria-labelledby="office-attendance-title">
-      <div>
-        <h2 id="office-attendance-title" className="text-2xl font-semibold tracking-tight">Faculty attendance records</h2>
-        <p className="mt-1 text-sm text-muted-foreground">
+      <div className="space-y-2">
+        <span className="inline-flex items-center gap-2 rounded-full bg-[#e8f0e9] px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-[#285c37] dark:bg-[#273b2c] dark:text-[#a5d5ad]">
+          <span className="size-1.5 rounded-full bg-[#4c915b]" /> Office records
+        </span>
+        <h2 id="office-attendance-title" className="text-2xl font-semibold tracking-tight sm:text-3xl">Faculty attendance records</h2>
+        <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
           Review attendance across the faculty or download the filtered list as a CSV file for Excel or Google Sheets.
         </p>
       </div>
@@ -206,7 +209,7 @@ export function OfficeAttendanceList({ teachers, initialError }: OfficeAttendanc
 
           <div className="overflow-x-auto rounded-lg border border-border">
             <table className="w-full min-w-[44rem] text-left text-sm">
-              <thead className="bg-muted/50 text-muted-foreground">
+              <thead className="bg-[#f0f5ef] text-[#385c3e] dark:bg-[#202a23] dark:text-[#d5e4d6]">
                 <tr>
                   <th scope="col" className="px-4 py-3 font-medium">Teacher</th>
                   <th scope="col" className="px-4 py-3 font-medium">Work date</th>
@@ -220,7 +223,7 @@ export function OfficeAttendanceList({ teachers, initialError }: OfficeAttendanc
                   const forgotten = !record.time_out &&
                     (record.time_out_status === "forgot_time_out" || record.work_date < manilaDateNow());
                   return (
-                    <tr key={record.id}>
+                    <tr key={record.id} className="transition-colors hover:bg-[#f8faf7] dark:hover:bg-[#202a23]">
                       <td className="px-4 py-3 font-medium">{teacherNames.get(record.teacher_id) ?? "Unknown teacher"}</td>
                       <td className="whitespace-nowrap px-4 py-3">{record.work_date}</td>
                       <td className="whitespace-nowrap px-4 py-3">{formatTime(record.time_in)}</td>

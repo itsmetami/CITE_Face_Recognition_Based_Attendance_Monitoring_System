@@ -3,41 +3,42 @@
 /* Design tokens. Change these to re-skin the whole app at once —
    every component below reads from them. */
 :root {
-  --background: #ffffff;
-  --foreground: #0a0a0a;
+  --background: #f6f7f3;
+  --foreground: #181d19;
   --card: #ffffff;
-  --card-foreground: #0a0a0a;
-  --primary: #1a1a1a;
-  --primary-foreground: #fafafa;
-  --secondary: #f4f4f5;
-  --secondary-foreground: #1a1a1a;
-  --muted: #f4f4f5;
-  --muted-foreground: #71717a;
+  --card-foreground: #181d19;
+  --primary: #e87525;
+  --primary-foreground: #ffffff;
+  --secondary: #e8f0e9;
+  --secondary-foreground: #204b31;
+  --muted: #eff1ed;
+  --muted-foreground: #69736a;
   --destructive: #dc2626;
-  --destructive-foreground: #fafafa;
-  --border: #e4e4e7;
-  --input: #e4e4e7;
-  --ring: #0a0a0a;
-  --radius: 0.625rem;
+  --destructive-foreground: #ffffff;
+  --border: #e1e6df;
+  --input: #dce2da;
+  --ring: #e87525;
+  --radius: 1rem;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #fafafa;
-    --card: #141414;
-    --card-foreground: #fafafa;
-    --primary: #fafafa;
-    --primary-foreground: #1a1a1a;
-    --secondary: #27272a;
-    --secondary-foreground: #fafafa;
-    --muted: #27272a;
-    --muted-foreground: #a1a1aa;
+    --background: #111713;
+    --foreground: #f3f5f0;
+    --card: #1a231d;
+    --card-foreground: #f3f5f0;
+    --primary: #ed8133;
+    --primary-foreground: #171a17;
+    --secondary: #24362a;
+    --secondary-foreground: #d6ead9;
+    --muted: #202a23;
+    --muted-foreground: #a5b1a6;
     --destructive: #ef4444;
     --destructive-foreground: #fafafa;
-    --border: #27272a;
-    --input: #3f3f46;
-    --ring: #d4d4d8;
+    --destructive-foreground: #ffffff;
+    --border: #2d3a30;
+    --input: #39463c;
+    --ring: #f19958;
   }
 }
 
@@ -63,7 +64,28 @@
 }
 
 body {
-  background: var(--background);
+  background:
+    radial-gradient(ellipse at 8% 0%, rgb(232 117 37 / 7%), transparent 28rem),
+    radial-gradient(ellipse at 100% 18%, rgb(53 119 72 / 7%), transparent 34rem),
+    var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
+  min-height: 100vh;
+}
+
+::selection {
+  background: rgb(232 117 37 / 24%);
+}
+
+@layer components {
+  .cite-card {
+    border-radius: 1.25rem;
+    box-shadow: 0 12px 36px -26px rgb(20 34 24 / 28%);
+    transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+  }
+
+  .cite-card:hover {
+    border-color: color-mix(in srgb, var(--border), #3b7a4d 18%);
+    box-shadow: 0 18px 42px -30px rgb(20 34 24 / 36%);
+  }
 }

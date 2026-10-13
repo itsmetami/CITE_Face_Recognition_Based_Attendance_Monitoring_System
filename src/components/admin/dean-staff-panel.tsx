@@ -123,9 +123,12 @@ export function DeanStaffPanel({ initialStaff, initialError }: DeanStaffPanelPro
 
   return (
     <section className="space-y-6" aria-labelledby="dean-tools-title">
-      <div>
-        <h2 id="dean-tools-title" className="text-2xl font-semibold tracking-tight">Dean administration</h2>
-        <p className="mt-1 text-sm text-muted-foreground">Create and manage teacher and secretary access.</p>
+      <div className="space-y-2">
+        <span className="inline-flex items-center gap-2 rounded-full bg-[#e87525]/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-[#b95b19] dark:bg-[#e87525]/15 dark:text-[#ffb274]">
+          <span className="size-1.5 rounded-full bg-[#e87525]" /> Administration
+        </span>
+        <h2 id="dean-tools-title" className="text-2xl font-semibold tracking-tight sm:text-3xl">Dean administration</h2>
+        <p className="text-sm leading-6 text-muted-foreground">Create and manage teacher and secretary access.</p>
       </div>
 
       <Card>
@@ -174,7 +177,7 @@ export function DeanStaffPanel({ initialStaff, initialError }: DeanStaffPanelPro
           ) : (
             <div className="space-y-4">
               {staff.map((account) => (
-                <form key={account.user_id} onSubmit={(event) => updateStaff(event, account.user_id)} className="grid gap-3 rounded-lg border border-border p-4 sm:grid-cols-2">
+                <form key={account.user_id} onSubmit={(event) => updateStaff(event, account.user_id)} className="grid gap-3 rounded-2xl border border-border bg-background/70 p-4 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor={`name-${account.user_id}`}>Display name</Label>
                     <Input id={`name-${account.user_id}`} name="display_name" defaultValue={account.display_name} required />

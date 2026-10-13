@@ -186,9 +186,12 @@ export function TeacherAttendancePanel({ initialRecord, initialError }: TeacherA
 
   return (
     <section className="space-y-5" aria-labelledby="teacher-attendance-title">
-      <div>
-        <h2 id="teacher-attendance-title" className="text-2xl font-semibold tracking-tight">My attendance</h2>
-        <p className="mt-1 text-sm text-muted-foreground">
+      <div className="space-y-2">
+        <span className="inline-flex items-center gap-2 rounded-full bg-[#e8f0e9] px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-[#285c37] dark:bg-[#273b2c] dark:text-[#a5d5ad]">
+          <span className="size-1.5 rounded-full bg-[#4c915b]" /> Teacher workspace
+        </span>
+        <h2 id="teacher-attendance-title" className="text-2xl font-semibold tracking-tight sm:text-3xl">My attendance</h2>
+        <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
           Scan the current QR displayed in the office. Your first scan is time-in; your second is time-out.
         </p>
       </div>
@@ -216,7 +219,7 @@ export function TeacherAttendancePanel({ initialRecord, initialError }: TeacherA
             )}
           </div>
           {scanning && <p className="text-sm text-muted-foreground" role="status">Point your camera at the QR code shown in the office.</p>}
-          {message && <p className="text-sm text-emerald-700" role="status">{message}</p>}
+          {message && <p className="text-sm font-medium text-[#28623b] dark:text-[#91cf9b]" role="status">{message}</p>}
           {error && <p className="text-sm text-destructive" role="alert">{error}</p>}
         </CardContent>
       </Card>
@@ -229,11 +232,11 @@ export function TeacherAttendancePanel({ initialRecord, initialError }: TeacherA
         <CardContent>
           {record ? (
             <dl className="grid gap-4 sm:grid-cols-2">
-              <div>
+            <div className="rounded-2xl bg-[#f4f7f2] p-4 dark:bg-[#202a23]">
                 <dt className="text-sm text-muted-foreground">Time in</dt>
                 <dd className="font-medium">{formatTime(record.time_in)}</dd>
               </div>
-              <div>
+              <div className="rounded-2xl bg-[#f4f7f2] p-4 dark:bg-[#202a23]">
                 <dt className="text-sm text-muted-foreground">Time out</dt>
                 <dd className="font-medium">
                   {record.time_out
